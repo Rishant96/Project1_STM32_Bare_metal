@@ -39,6 +39,28 @@ typedef struct {
 #define RCC_CFGR_PLLSRC   (1U << 16)
 #define RCC_CFGR_PLLMUL9  (7U << 18)
 
+#define RCC_APB2ENR_AFIOEN   (1U << 0)
+#define RCC_APB2ENR_IOPAEN   (1U << 2)
+#define RCC_APB2ENR_IOPBEN   (1U << 3)
+#define RCC_APB2ENR_IOPCEN   (1U << 4)
+#define RCC_APB2ENR_USART1EN (1U << 14)
+
+
+typedef struct {
+    volatile uint32_t CRL;
+    volatile uint32_t CRH;
+    volatile uint32_t IDR;
+    volatile uint32_t ODR;
+    volatile uint32_t BSRR;
+    volatile uint32_t BRR;
+    volatile uint32_t LCKR;
+} GPIO_t;
+
+#define GPIOA             ((GPIO_t *)(APB2_BASE + 0x0800))
+#define GPIOB             ((GPIO_t *)(APB2_BASE + 0x0C00))
+#define GPIOC             ((GPIO_t *)(APB2_BASE + 0x1000))
+
+
 typedef struct {
     volatile uint32_t ACR;          /* 0x00 */
     volatile uint32_t KEYR;         /* 0x04 */
