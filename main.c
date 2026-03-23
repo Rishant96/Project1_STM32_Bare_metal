@@ -1,18 +1,5 @@
 #include "MCU_STM32.h"
 
-static inline void uart_putc(char c)
-{
-    while (!(USART1->SR & USART_SR_TXE));
-    USART1->DR = (uint32_t)c;
-}
-
-static inline void uart_write(const char *s)
-{
-    while (*s) {
-        uart_putc(*s++);
-    }
-}
-
 static void clock_init(void)
 {
 	FLASH_R->ACR = FLASH_ACR_LATENCY_2WS | FLASH_ACR_PRFTBE;
@@ -51,10 +38,30 @@ static void gpio_init(void)
 	GPIOA->CRH |=  (0xBU << 4);
 }
 
+static inline void uart_putc(char c)
+{
+    while (!(USART1->SR & USART_SR_TXE));
+    USART1->DR = (uint32_t)c;
+}
+
+static inline void uart_write(const char *s)
+{
+    while (*s) {
+        uart_putc(*s++);
+    }
+}
+
+static void uart_init(void)
+{
+	USART1->BRR = 0x271;
+	USART1->CR1 = USART_CR1_UE | USART_CR1_TE;
+}
+
 int main(void)
 {
 	clock_init();
 	gpio_init();
+	uart_init();
 	
 	uart_write("Project 1 - Bare Metal STM32 Programming\r\n");
 	
