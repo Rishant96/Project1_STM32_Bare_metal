@@ -91,6 +91,17 @@ typedef struct {
 #define TIM_DIER_UIE      (1U << 0) 
 #define TIM_SR_UIF        (1U << 0)   
 
+typedef struct {
+    volatile uint32_t IMR;
+    volatile uint32_t EMR;
+    volatile uint32_t RTSR;
+    volatile uint32_t FTSR;
+    volatile uint32_t SWIER;
+    volatile uint32_t PR;
+} EXTI_t;
+
+#define EXTI              ((EXTI_t *)(APB2_BASE + 0x0400))
+
 #define NVIC_ISER0        (*(volatile uint32_t *)0xE000E100)
 #define NVIC_ISER1        (*(volatile uint32_t *)0xE000E104)
 

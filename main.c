@@ -69,6 +69,14 @@ static void tim2_init(void)
 	NVIC_ISER0 = (1U << IRQ_TIM2);
 }
 
+static void exti0_init(void)
+{
+	EXTI->FTSR |= (1U << 0);
+	EXTI->IMR  |= (1U << 0);
+	
+	NVIC_ISER0 = (1U << IRQ_EXTI0);
+}
+
 void TIM2_IRQHandler(void)
 {
     if (TIM2->SR & TIM_SR_UIF) {
@@ -78,12 +86,21 @@ void TIM2_IRQHandler(void)
     }
 }
 
+void EXTI0_IRQHandler(void)
+{
+	if (EXTI->PR & (1U << 0)) {
+		EXTI->PR = (1U << 0);
+		uart_write("button!\r\n");
+	}
+}
+
 int main(void)
 {
 	clock_init();
 	gpio_init();
 	uart_init();
 	tim2_init();
+	exti0_init();
 	
 	uart_write("Project 1 - Bare Metal STM32 Programming\r\n");
 	
