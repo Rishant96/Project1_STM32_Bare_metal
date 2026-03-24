@@ -8,8 +8,9 @@ static void clock_init(void)
 	while (!(RCC->CR & RCC_CR_HSERDY));
 	
 	RCC->CFGR |= RCC_CFGR_PPRE1_DIV2 | RCC_CFGR_PLLSRC | RCC_CFGR_PLLMUL9;
-	
+
 	/* Turn on PLL and wait */
+	RCC->CR |= RCC_CR_PLLON;
 	while (!(RCC->CR & RCC_CR_PLLRDY));
 	
 	/* Switch system clock to PLL */
@@ -26,7 +27,7 @@ static void gpio_init(void)
 	
 	/* Setup Pin 13 */
 	GPIOC->CRH &= ~(0xFU << 20);
-	GPIOC->CRH &=  (0x2U << 20);
+	GPIOC->CRH |=  (0x2U << 20);
 	
 	/* Setup Pin 0 */
 	GPIOA->CRL &= ~(0xFU << 0);
@@ -103,6 +104,7 @@ int main(void)
 	exti0_init();
 	
 	uart_write("Project 1 - Bare Metal STM32 Programming\r\n");
-	
+
 	for (;;) { } /* Using interrupts for flow control */
+
 }
