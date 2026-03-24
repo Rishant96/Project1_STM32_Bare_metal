@@ -143,10 +143,10 @@ void Reset_Handler(void)
 
     main();
 
-    while (1);
+    for (;;);
 }
 
 void Default_Handler(void)
 {
-    while (1);
+    for (;;);
 }
