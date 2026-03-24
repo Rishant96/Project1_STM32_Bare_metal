@@ -57,11 +57,33 @@ static void uart_init(void)
 	USART1->CR1 = USART_CR1_UE | USART_CR1_TE;
 }
 
+static void tim2_init(void)
+{
+	RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
+	
+	TIM2->PSC = 7199;
+	TIM2->ARR = 9999;
+	TIM2->DIER = TIM_DIER_UIE;
+	TIM2->CR1  = TIM_CR1_CEN;
+	
+	NVIC_ISER0 = (1U << IRQ_TIM2);
+}
+
+void TIM2_IRQHandler(void)
+{
+    if (TIM2->SR & TIM_SR_UIF) {
+        TIM2->SR &= ~TIM_SR_UIF;   /* Clear interrupt flag */
+        GPIOC->ODR ^= (1U << 13);  /* Toggle LED */
+        uart_write("tick\r\n");
+    }
+}
+
 int main(void)
 {
 	clock_init();
 	gpio_init();
 	uart_init();
+	tim2_init();
 	
 	uart_write("Project 1 - Bare Metal STM32 Programming\r\n");
 	

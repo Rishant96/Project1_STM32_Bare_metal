@@ -2,7 +2,8 @@
 #define STM32F103_H
 
 #define PERIPH_BASE 	((uint32_t)0x40000000)
-#define APB2_BASE         (PERIPH_BASE + 0x00010000)
+#define APB1_BASE       (PERIPH_BASE + 0x00000000)
+#define APB2_BASE       (PERIPH_BASE + 0x00010000)
 #define AHB_BASE    	(PERIPH_BASE + 0x00020000)
 
 typedef struct {
@@ -45,6 +46,7 @@ typedef struct {
 #define RCC_APB2ENR_IOPCEN   (1U << 4)
 #define RCC_APB2ENR_USART1EN (1U << 14)
 
+#define RCC_APB1ENR_TIM2EN   (1U << 0)
 
 typedef struct {
     volatile uint32_t CRL;
@@ -60,6 +62,40 @@ typedef struct {
 #define GPIOB             ((GPIO_t *)(APB2_BASE + 0x0C00))
 #define GPIOC             ((GPIO_t *)(APB2_BASE + 0x1000))
 
+typedef struct {
+    volatile uint32_t CR1;          /* 0x00 */
+    volatile uint32_t CR2;          /* 0x04 */
+    volatile uint32_t SMCR;         /* 0x08 */
+    volatile uint32_t DIER;         /* 0x0C */
+    volatile uint32_t SR;           /* 0x10 */
+    volatile uint32_t EGR;          /* 0x14 */
+    volatile uint32_t CCMR1;        /* 0x18 */
+    volatile uint32_t CCMR2;        /* 0x1C */
+    volatile uint32_t CCER;         /* 0x20 */
+    volatile uint32_t CNT;          /* 0x24 */
+    volatile uint32_t PSC;          /* 0x28 */
+    volatile uint32_t ARR;          /* 0x2C */
+    volatile uint32_t _reserved;    /* 0x30 */
+    volatile uint32_t CCR1;         /* 0x34 */
+    volatile uint32_t CCR2;         /* 0x38 */
+    volatile uint32_t CCR3;         /* 0x3C */
+    volatile uint32_t CCR4;         /* 0x40 */
+    volatile uint32_t _reserved2;   /* 0x44 */
+    volatile uint32_t DCR;          /* 0x48 */
+    volatile uint32_t DMAR;         /* 0x4C */
+} TIM_t;
+
+#define TIM2              ((TIM_t *)(APB1_BASE + 0x0000))
+
+#define TIM_CR1_CEN       (1U << 0) 
+#define TIM_DIER_UIE      (1U << 0) 
+#define TIM_SR_UIF        (1U << 0)   
+
+#define NVIC_ISER0        (*(volatile uint32_t *)0xE000E100)
+#define NVIC_ISER1        (*(volatile uint32_t *)0xE000E104)
+
+#define IRQ_EXTI0         6
+#define IRQ_TIM2          28
 
 typedef struct {
     volatile uint32_t ACR;          /* 0x00 */

@@ -12,6 +12,8 @@ extern uint32_t _etext;
 void Reset_Handler(void);
 void Default_Handler(void);
 
+void TIM2_IRQHandler(void);
+
 __attribute__((section(".isr_vector")))
 const void *vector_table[] =
 {
@@ -27,7 +29,7 @@ const void *vector_table[] =
 
     /* External IRQs */
     /* 0..27 omitted */
-    Default_Handler
+    TIM2_IRQHandler
 };
 
 void Reset_Handler(void)
