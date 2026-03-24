@@ -38,13 +38,13 @@ static void gpio_init(void)
 	GPIOA->CRH |=  (0xBU << 4);
 }
 
-static inline void uart_putc(char c)
+static void uart_putc(char c)
 {
     while (!(USART1->SR & USART_SR_TXE));
     USART1->DR = (uint32_t)c;
 }
 
-static inline void uart_write(const char *s)
+static void uart_write(const char *s)
 {
     while (*s) {
         uart_putc(*s++);

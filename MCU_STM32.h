@@ -1,6 +1,8 @@
 #ifndef STM32F103_H
 #define STM32F103_H
 
+#include <stdint.h>
+
 #define PERIPH_BASE 	((uint32_t)0x40000000)
 #define APB1_BASE       (PERIPH_BASE + 0x00000000)
 #define APB2_BASE       (PERIPH_BASE + 0x00010000)

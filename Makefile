@@ -1,39 +1,42 @@
-TARGET = main
-MCU = cortex-m3
+# Makefile - Bare-metal STM32F103C8T6 (Blue Pill)
+# Toolchain: arm-none-eabi-gcc
+# Flash via: st-flash or openocd
 
-CC = arm-none-eabi-gcc
-OBJCOPY = arm-none-eabi-objcopy
-SIZE = arm-none-eabi-size
+PREFIX  = arm-none-eabi-
+CC      = $(PREFIX)gcc
+OBJCOPY = $(PREFIX)objcopy
+SIZE    = $(PREFIX)size
 
-CFLAGS = -mcpu=$(MCU) -mthumb -O2 -Wall -Wextra -nostdlib -ffreestanding
-LDFLAGS = -T linker.ld -nostdlib
+TARGET  = firmware
 
-UNITY_SRC = unity.c
+# Compiler flags: C89, no stdlib, thumb, cortex-m3
+CFLAGS  = -std=c89 -Wall -Wextra -Os \
+          -mcpu=cortex-m3 -mthumb \
+          -ffreestanding -nostdlib \
+          -fno-common
 
-ELF = $(TARGET).elf
-BIN = $(TARGET).bin
+LDFLAGS = -T linker.ld -nostdlib -Wl,--gc-sections
+LDLIBS  = -lgcc
 
-all: $(BIN) size
+SRCS    = startup.c main.c
+OBJS    = $(SRCS:.c=.o)
 
-$(UNITY_SRC): startup.c main.c
-	@echo "/* Unity Build File */" > $(UNITY_SRC)
-	@echo '#include "startup.c"' >> $(UNITY_SRC)
-	@echo '#include "main.c"' >> $(UNITY_SRC)
+.PHONY: all clean flash
 
-$(ELF): $(UNITY_SRC) linker.ld MCU_STM32.h
-	$(CC) $(CFLAGS) $(UNITY_SRC) -o $(ELF) $(LDFLAGS)
+all: $(TARGET).bin
+	$(SIZE) $(TARGET).elf
 
-$(BIN): $(ELF)
-	$(OBJCOPY) -O binary $(ELF) $(BIN)
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-size:
-	$(SIZE) $(ELF)
+$(TARGET).elf: $(OBJS)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) -o $@ $(LDLIBS)
 
-flash: $(BIN)
-	st-flash write $(BIN) 0x08000000
+$(TARGET).bin: $(TARGET).elf
+	$(OBJCOPY) -O binary $< $@
+
+flash: $(TARGET).bin
+	st-flash write $(TARGET).bin 0x08000000
 
 clean:
-	rm -f $(UNITY_SRC) $(ELF) $(BIN)
-
-.PHONY: all flash clean size
-
+	rm -f $(OBJS) $(TARGET).elf $(TARGET).bin
