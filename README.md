@@ -1,2 +1,1 @@
-# project_1
-# Project2-Bare-Metal-CAN-Network
+# project_1_STM32_Bare_metal
