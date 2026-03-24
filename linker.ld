@@ -24,7 +24,7 @@ SECTIONS
     /* Initialized data: stored in flash, copied to SRAM by Reset_Handler */
     .data :
     {
-        . = ALIGN(4);
+        . = ORIGIN(FLASH);
         _sdata = .;
         *(.data)
         *(.data*)
